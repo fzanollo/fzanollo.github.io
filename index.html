@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Florencia Zanollo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a2e;
+      --paper: #f5f2eb;
+      --paper-warm: #ede9df;
+      --accent: #c75b2a;
+      --accent-light: #e8956d;
+      --teal: #2a7c8c;
+      --teal-light: #4aa5b5;
+      --muted: #6b6660;
+      --rule: #d4cfc5;
+      --mono: 'DM Mono', monospace;
+      --serif: 'DM Serif Display', serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 4rem 5rem 6rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .header-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 38ch;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .pill-outline {
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      background: transparent;
+    }
+    .pill-outline:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .pill-filled {
+      background: var(--accent);
+      color: white;
+      border: 1.5px solid var(--accent);
+    }
+    .pill-filled:hover {
+      background: #a8461d;
+      border-color: #a8461d;
+    }
+
+    .header-visual {
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Geometric art in header */
+    .header-visual svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+    }
+
+    .header-scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 6rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+    }
+
+    .scroll-line {
+      width: 3rem;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.5rem;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 4rem;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: 1.05rem;
+      color: #3a3732;
+      margin-bottom: 1.25rem;
+    }
+
+    .about-text p:first-child::first-letter {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      line-height: 0.8;
+      float: left;
+      margin-right: 0.1em;
+      color: var(--accent);
+    }
+
+    .skills-panel {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 2rem;
+      border-radius: 2px;
+      position: sticky;
+      top: 5rem;
+    }
+
+    .skills-panel h3 {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-group-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal-light);
+      margin-bottom: 0.6rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 2px;
+      color: rgba(245,242,235,0.8);
+    }
+
+    .lang-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.85rem;
+    }
+
+    .lang-level {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent-light);
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--paper-warm); max-width: 100%; padding: 6rem 0; }
+    #experience > .inner { max-width: 1200px; margin: 0 auto; padding: 0 6rem; }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      bottom: 0;
+      width: 1px;
+      background: var(--rule);
+    }
+
+    .timeline-group {
+      margin-bottom: 3.5rem;
+    }
+
+    .timeline-group-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1.5rem;
+      margin-left: -2rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+
+    .timeline-group-label::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -0.4rem;
+      top: 0.5rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent);
+      background: var(--paper-warm);
+    }
+
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-title {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-org {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    /* ── RESEARCH / PUBLICATIONS ── */
+    .pub-card {
+      border: 1px solid var(--rule);
+      padding: 1.5rem 2rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pub-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+    }
+
+    .pub-card:hover {
+      border-color: var(--accent-light);
+      transform: translateX(4px);
+    }
+
+    .pub-venue {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .pub-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .pub-authors {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .pub-authors strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* ── PROJECTS ── */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 2rem;
+      border-radius: 2px;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:hover { transform: translateY(-4px); }
+
+    .project-card::after {
+      content: '↗';
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.2rem;
+      color: var(--accent-light);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .project-card:hover::after { opacity: 1; }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal-light);
+      margin-bottom: 0.75rem;
+    }
+
+    .project-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--paper);
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      color: rgba(245,242,235,0.65);
+      line-height: 1.6;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--ink);
+      max-width: 100%;
+      padding: 6rem 0;
+    }
+
+    #contact .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 6rem;
+    }
+
+    #contact .section-label { color: var(--accent-light); }
+    #contact .section-label::after { background: rgba(255,255,255,0.15); }
+    #contact h2 { color: var(--paper); }
+    #contact p { color: rgba(245,242,235,0.6); font-size: 1rem; margin-bottom: 2rem; }
+
+    .contact-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: var(--paper);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem 6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      color: rgba(245,242,235,0.3);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      header { grid-template-columns: 1fr; min-height: auto; }
+      .header-text { padding: 4rem 2rem; }
+      .header-visual { height: 40vw; }
+      nav { padding: 0 2rem; }
+      section, #experience > .inner, #contact .inner, footer { padding-left: 2rem; padding-right: 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .skills-panel { position: static; }
+      .project-grid { grid-template-columns: 1fr; }
+      .header-scroll-hint { left: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">fzanollo</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="header-text">
+    <p class="header-eyebrow">PhD Candidate · Computer Science</p>
+    <h1>Florencia<br><em>Zanollo</em></h1>
+    <p class="header-desc">Researcher at UBA & CONICET working on synthesis algorithms for discrete event systems, blending formal methods with machine learning.</p>
+    <div class="header-links">
+      <a href="mailto:florenciazanollo@gmail.com" class="pill pill-filled">✉ Email me</a>
+      <a href="https://github.com/fzanollo" class="pill pill-outline" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/fzanollo" class="pill pill-outline" target="_blank">LinkedIn</a>
+      <a href="https://scholar.google.com/citations?user=L-YV_94AAAAJ&hl=en" class="pill pill-outline" target="_blank">Scholar</a>
+    </div>
+  </div>
+
+  <div class="header-visual" aria-hidden="true">
+    <svg viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <!-- Background circles / automata-like nodes -->
+      <circle cx="300" cy="400" r="280" stroke="rgba(199,91,42,0.12)" stroke-width="1"/>
+      <circle cx="300" cy="400" r="200" stroke="rgba(199,91,42,0.1)" stroke-width="1"/>
+      <circle cx="300" cy="400" r="130" stroke="rgba(42,124,140,0.15)" stroke-width="1"/>
+
+      <!-- Node circles (automata states) -->
+      <circle cx="300" cy="130" r="18" stroke="#c75b2a" stroke-width="1.5" fill="rgba(199,91,42,0.08)"/>
+      <circle cx="480" cy="260" r="14" stroke="#2a7c8c" stroke-width="1.5" fill="rgba(42,124,140,0.08)"/>
+      <circle cx="430" cy="500" r="18" stroke="#c75b2a" stroke-width="1.5" fill="rgba(199,91,42,0.08)"/>
+      <circle cx="160" cy="500" r="14" stroke="#2a7c8c" stroke-width="1.5" fill="rgba(42,124,140,0.08)"/>
+      <circle cx="120" cy="260" r="18" stroke="#c75b2a" stroke-width="1.5" fill="rgba(199,91,42,0.08)"/>
+      <circle cx="300" cy="400" r="24" stroke="#c75b2a" stroke-width="2" fill="rgba(199,91,42,0.15)"/>
+      <circle cx="300" cy="400" r="8" fill="#c75b2a" opacity="0.7"/>
+
+      <!-- Edges -->
+      <line x1="300" y1="130" x2="480" y2="260" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <line x1="480" y1="260" x2="430" y2="500" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <line x1="430" y1="500" x2="160" y2="500" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <line x1="160" y1="500" x2="120" y2="260" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <line x1="120" y1="260" x2="300" y2="130" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <!-- Inner connections -->
+      <line x1="300" y1="130" x2="300" y2="400" stroke="rgba(199,91,42,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="480" y1="260" x2="300" y2="400" stroke="rgba(199,91,42,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="430" y1="500" x2="300" y2="400" stroke="rgba(42,124,140,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="160" y1="500" x2="300" y2="400" stroke="rgba(42,124,140,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="120" y1="260" x2="300" y2="400" stroke="rgba(199,91,42,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+
+      <!-- Decorative dots -->
+      <circle cx="300" cy="130" r="4" fill="#c75b2a" opacity="0.9"/>
+      <circle cx="480" cy="260" r="3" fill="#2a7c8c" opacity="0.9"/>
+      <circle cx="430" cy="500" r="4" fill="#c75b2a" opacity="0.9"/>
+      <circle cx="160" cy="500" r="3" fill="#2a7c8c" opacity="0.9"/>
+      <circle cx="120" cy="260" r="4" fill="#c75b2a" opacity="0.9"/>
+
+      <!-- Labels (automata style) -->
+      <text x="300" y="115" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">q₀</text>
+      <text x="497" y="265" text-anchor="start" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">q₁</text>
+      <text x="445" y="505" text-anchor="start" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">q₂</text>
+      <text x="130" y="515" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">q₃</text>
+      <text x="100" y="265" text-anchor="end" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">q₄</text>
+
+      <!-- Outer decorative ring of dots -->
+      <g opacity="0.25">
+        <circle cx="300" cy="60" r="2" fill="#c75b2a"/>
+        <circle cx="430" cy="95" r="1.5" fill="white"/>
+        <circle cx="525" cy="200" r="1.5" fill="white"/>
+        <circle cx="555" cy="340" r="2" fill="#2a7c8c"/>
+        <circle cx="510" cy="480" r="1.5" fill="white"/>
+        <circle cx="390" cy="610" r="2" fill="#c75b2a"/>
+        <circle cx="210" cy="615" r="1.5" fill="white"/>
+        <circle cx="90" cy="490" r="2" fill="#2a7c8c"/>
+        <circle cx="45" cy="340" r="1.5" fill="white"/>
+        <circle cx="75" cy="195" r="2" fill="#c75b2a"/>
+        <circle cx="170" cy="90" r="1.5" fill="white"/>
+      </g>
+
+      <!-- Grid pattern subtle -->
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      </pattern>
+      <rect width="600" height="800" fill="url(#grid)"/>
+    </svg>
+  </div>
+
+  <div class="header-scroll-hint">
+    <span class="scroll-line"></span>
+    Scroll to explore
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <h2>Researcher,<br>educator & builder</h2>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I am a PhD candidate in Computer Science at the University of Buenos Aires (UBA) and CONICET, working at the Laboratory on Foundations and Tools for Software Engineering (LaFHIS). My research sits at the intersection of formal methods and machine learning — specifically, I develop generalized synthesis algorithms for discrete event systems, exploring how AI heuristics can improve controller synthesis for adaptive systems.</p>
+      <p>Before returning to academia, I spent a year and a half as a Software Engineer at Mercado Libre, building AB-testing infrastructure and data analysis tools at scale. Prior to that, I interned at Microsoft on the open-source Windows Package Manager (winget), implementing dependency management from the client side.</p>
+      <p>Teaching is something I hold close to my heart. Since 2017 I've been a teaching assistant at UBA's Computer Science Department, supporting students across courses from algorithms and data structures to software engineering. Giving back to a community that shaped me is one of the most rewarding parts of my work.</p>
+      <p>My interests span algorithms, automata and graph theory, AI, and game development — I'm always drawn to projects where rigour meets creativity.</p>
+    </div>
+
+    <div class="skills-panel reveal">
+      <h3>Technical skills</h3>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Expert</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Git</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Proficient</div>
+        <div class="skill-tags">
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">Ruby</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">Bash</span>
+          <span class="skill-tag">LaTeX</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Familiar with</div>
+        <div class="skill-tags">
+          <span class="skill-tag">C#</span>
+          <span class="skill-tag">Smalltalk</span>
+          <span class="skill-tag">ASM</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">GCP</span>
+          <span class="skill-tag">MongoDB</span>
+          <span class="skill-tag">Haxe</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Languages</div>
+        <div class="lang-item"><span>Spanish</span><span class="lang-level">Native</span></div>
+        <div class="lang-item"><span>English</span><span class="lang-level">Advanced</span></div>
+        <div class="lang-item"><span>Japanese</span><span class="lang-level">Basic (N5)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="max-width:100%; padding: 6rem 0; background: var(--paper-warm);">
+  <div style="max-width:1200px; margin:0 auto; padding:0 6rem;">
+    <div class="section-label">Experience</div>
+    <h2>Where I've worked<br>& studied</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-group reveal">
+        <div class="timeline-group-label">Academic</div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Apr 2025 – Present</div>
+          <div class="timeline-title">PhD Candidate</div>
+          <div class="timeline-org">CONICET & Universidad de Buenos Aires</div>
+          <div class="timeline-desc">Generalized synthesis algorithms for discrete event systems. Blending software engineering techniques with machine learning to improve controller synthesis heuristics.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Sep 2017 – Present</div>
+          <div class="timeline-title">Teaching Assistant</div>
+          <div class="timeline-org">Universidad de Buenos Aires</div>
+          <div class="timeline-desc">Software Engineering II, Algorithms & Data Structures III, Computer Organization II, Introduction to CS, Algebra. Marking exams, preparing lessons, and mentoring students.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">May 2019 – Mar 2022</div>
+          <div class="timeline-title">Research Assistant</div>
+          <div class="timeline-org">LaFHIS, UBA</div>
+          <div class="timeline-desc">Worked on Modal Transition System Analyzer (MTSA) — analysis, implementation, testing and refactoring of directed controller synthesis algorithms for discrete event systems.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2018 – Jul 2018</div>
+          <div class="timeline-title">Research Intern</div>
+          <div class="timeline-org">National Institute of Informatics, Tokyo, Japan</div>
+          <div class="timeline-desc">Supervisor: Prof. Hideaki Takeda. Social Network Analysis using Linked Open Data (RDF, SPARQL) to study relationships between anime voice actors.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Aug 2016 – Jan 2018</div>
+          <div class="timeline-title">Computer Science Popularizer</div>
+          <div class="timeline-org">Universidad de Buenos Aires</div>
+          <div class="timeline-desc">Organized and led coding workshops for high school students. Speaker at departmental events and UBA's annual CS week (SDC).</div>
+        </div>
+      </div>
+
+      <div class="timeline-group reveal">
+        <div class="timeline-group-label">Industry</div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2022 – Aug 2023</div>
+          <div class="timeline-title">Software Engineer</div>
+          <div class="timeline-org">Mercado Libre — Melidata</div>
+          <div class="timeline-desc">Experiments team: built AB-test infrastructure and data analysis tools. Multi-language SDK support (Java, JS, Go, Python). Data on AWS and GCP.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">May 2021 – Jul 2021</div>
+          <div class="timeline-title">Software Engineer Intern</div>
+          <div class="timeline-org">Microsoft</div>
+          <div class="timeline-desc">Implemented dependency management on the client side of the open-source Windows Package Manager (winget).</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Sep 2018 – Dec 2018</div>
+          <div class="timeline-title">Freelance Backend Developer</div>
+          <div class="timeline-org">Argentinos por la Educación</div>
+          <div class="timeline-desc">API development and maintenance with Django. Also mentored participants at APE's hackathon.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Jun 2016 – Dec 2016</div>
+          <div class="timeline-title">Software Engineer Intern</div>
+          <div class="timeline-org">Hexacta</div>
+          <div class="timeline-desc">In-house staff management web app with AngularJS front-end and Ruby back-end.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Jan 2015 – Oct 2015</div>
+          <div class="timeline-title">Game Developer</div>
+          <div class="timeline-org">Purple Tree Studio</div>
+          <div class="timeline-desc">Developed a multiplatform (desktop, Android, web) game framework using Haxe/Flambe, Java, JavaScript.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-label">Research</div>
+  <h2>Publications</h2>
+
+  <div class="reveal">
+    <div class="pub-card">
+      <div class="pub-venue">Automatica · Volume 147 · 2023</div>
+      <div class="pub-title">On-the-fly informed search of non-blocking directed controllers</div>
+      <div class="pub-authors">Daniel Ciolek, Matias Duran, <strong>Florencia Zanollo</strong>, Nicolas Pazos, Julián Braier, Víctor A. Braberman, Nicolás D'Ippolito, Sebastián Uchitel</div>
+    </div>
+
+    <p style="font-size:0.85rem; color:var(--muted); margin-top:1rem;">
+      For a full list of publications see my
+      <a href="https://scholar.google.com/citations?user=L-YV_94AAAAJ&hl=en" style="color:var(--accent); text-decoration:none;" target="_blank">Google Scholar profile →</a>
+    </p>
+  </div>
+
+  <div style="margin-top:4rem;">
+    <div class="section-label">Research focus</div>
+    <div class="project-grid reveal" style="margin-top:1.5rem;">
+      <div style="padding:1.5rem; border:1px solid var(--rule); border-radius:2px; background:white;">
+        <div style="font-family:var(--mono); font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem;">Formal Methods</div>
+        <div style="font-family:var(--serif); font-size:1.15rem; margin-bottom:0.5rem;">Discrete Event Systems & Controller Synthesis</div>
+        <p style="font-size:0.88rem; color:var(--muted);">Generalized synthesis algorithms for directed controllers, on-the-fly composition, and heuristic-guided exploration of state spaces in parallel automata.</p>
+      </div>
+      <div style="padding:1.5rem; border:1px solid var(--rule); border-radius:2px; background:white;">
+        <div style="font-family:var(--mono); font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem;">AI + Software Engineering</div>
+        <div style="font-family:var(--serif); font-size:1.15rem; margin-bottom:0.5rem;">ML-enhanced Synthesis Heuristics</div>
+        <p style="font-size:0.88rem; color:var(--muted);">Integrating machine learning to improve heuristic functions in automated synthesis, applied to requirements engineering and adaptive systems.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background:var(--paper-warm); max-width:100%; padding:6rem 0;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 6rem;">
+    <div class="section-label">Projects</div>
+    <h2>Open source &<br>side projects</h2>
+
+    <div class="project-grid reveal">
+      <a href="https://mtsa.dc.uba.ar/" class="project-card" target="_blank">
+        <div class="project-tag">Research Tool · Java</div>
+        <div class="project-title">MTSA</div>
+        <div class="project-desc">Modal Transition System Analyser — a tool for controller synthesis for discrete event systems. Contributed analysis, implementation, testing and refactoring of directed synthesis algorithms.</div>
+      </a>
+
+      <a href="https://github.com/fzanollo/nii-internship" class="project-card" target="_blank">
+        <div class="project-tag">Research · Python · SPARQL</div>
+        <div class="project-title">NII Internship — Anime Network Analysis</div>
+        <div class="project-desc">Social Network Analysis on anime voice actor relationships using Linked Open Data (RDF/SPARQL). Research conducted at the National Institute of Informatics, Tokyo.</div>
+      </a>
+
+<!--      <a href="https://github.com/fzanollo" class="project-card" target="_blank">-->
+<!--        <div class="project-tag">Game Dev · Haxe / Java / JS</div>-->
+<!--        <div class="project-title">Multiplatform Game Framework</div>-->
+<!--        <div class="project-desc">A cross-platform (desktop, Android, web) framework for creating simple games built with Haxe/Flambe at Purple Tree Studio.</div>-->
+<!--      </a>-->
+
+      <a href="https://github.com/fzanollo" class="project-card" target="_blank">
+        <div class="project-tag">Open Source · C#</div>
+        <div class="project-title">winget — Dependency Management</div>
+        <div class="project-desc">Implemented dependency management on the client side of the Windows Package Manager during a Microsoft internship. Open source, part of the official winget project.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:var(--ink); max-width:100%; padding:6rem 0;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 6rem;">
+    <div class="section-label" style="color:var(--accent-light);">Contact</div>
+    <h2 style="color:var(--paper);">Let's connect</h2>
+    <p style="color:rgba(245,242,235,0.6); font-size:1rem; margin-bottom:2rem; max-width:50ch;">Interested in research collaborations, open source projects, or just want to talk about algorithms and automata? I'd love to hear from you.</p>
+
+    <div class="contact-links reveal">
+      <a href="mailto:florenciazanollo@gmail.com" class="contact-link">✉ florenciazanollo@gmail.com</a>
+      <a href="https://linkedin.com/in/fzanollo" class="contact-link" target="_blank">LinkedIn</a>
+      <a href="https://github.com/fzanollo" class="contact-link" target="_blank">GitHub</a>
+      <a href="https://scholar.google.com/citations?user=L-YV_94AAAAJ&hl=en" class="contact-link" target="_blank">Google Scholar</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Florencia Zanollo · Buenos Aires, Argentina</p>
+  <p>fzanollo.github.io</p>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
